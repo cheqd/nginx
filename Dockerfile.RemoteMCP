@@ -30,7 +30,7 @@ COPY entrypoint-remote-mcp.sh /etc/nginx/entrypoint-remote-mcp.sh
 RUN touch /var/run/nginx.pid && \
     mkdir -p /etc/nginx/sites-enabled && \
     chown -R nginx:nginx /var/run/nginx.pid /var/cache/nginx /etc/nginx && \
-    chmod +x /etc/nginx/entrypoint.sh
+    chmod +x /etc/nginx/entrypoint-remote-mcp.sh
 
 # Set environment variables
 ENV MCP_SERVER_ENDPOINT=api.logto.dev
