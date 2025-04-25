@@ -35,19 +35,36 @@ jobs:
             type=raw,value=staging-latest
             type=sha,format=long
 
-      - name: Build image
+      - name: Build LogTo image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
-          outputs: type=docker,dest=nginx-staging.tar
+          outputs: type=docker,dest=nginx-logto-staging.tar
           cache-from: type=gha
           cache-to: type=gha,mode=min  
 
-      - name: Upload build image as artifact
+      - name: Upload LogTo build image as an artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nginx-staging
-          path: nginx-staging.tar
+          name: nginx-logto-staging
+          path: nginx-logto-staging.tar
+      
+      - name: Build MCP Server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.RemoteMCP
+          platforms: linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
+          outputs: type=docker,dest=nginx-mcp-server-staging.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=min  
+
+      - name: Upload MCP server build image as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nginx-mcp-server-staging
+          path: nginx-mcp-server-staging.tar

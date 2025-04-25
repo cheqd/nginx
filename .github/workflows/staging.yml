@@ -6,8 +6,8 @@ defaults:
     shell: bash
 
 jobs:
-  deploy-staging:
-    name: "Deploy image"
+  deploy-logto-staging:
+    name: "Deploy LogTo image"
     runs-on: ubuntu-latest
     env: 
       IMAGE_NAME: ${{ github.repository }}
@@ -31,13 +31,46 @@ jobs:
       - name: Download Docker image
         uses: actions/download-artifact@v4
         with:
-          name: nginx-staging
+          name: nginx-logto-staging
 
       - name: Load Docker image
-        run: docker image load --input nginx-staging.tar
+        run: docker image load --input nginx-logto-staging.tar
 
       - name: Push image to GitHub Container Registry
         run: docker image push --all-tags ghcr.io/${{ env.IMAGE_NAME }}
+
+      - name: Push staging image to DOCR
+        run: docker image push --all-tags registry.digitalocean.com/${{ env.IMAGE_NAME }}
+
+  deploy-mcp-server-staging:
+    name: "Deploy MCP Server image"
+    runs-on: ubuntu-latest
+    env: 
+      IMAGE_NAME: 'nginx-mcp-server'
+
+    steps:
+      - name: Install DigitalOcean CLI
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Login to DOCR
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: nginx-mcp-server-staging
+
+      - name: Load Docker image
+        run: docker image load --input nginx-mcp-server-staging.tar
 
       - name: Push staging image to DOCR
         run: docker image push --all-tags registry.digitalocean.com/${{ env.IMAGE_NAME }}
