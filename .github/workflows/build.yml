@@ -7,8 +7,8 @@ defaults:
 
 
 jobs:
-  build-docker:
-    name: "Build Nginx Docker Image"
+  build-logto-docker:
+    name: "Build LogTo Nginx Docker Image"
     runs-on: ubuntu-latest
     env: 
       IMAGE_NAME: ${{ github.repository }}
@@ -51,6 +51,33 @@ jobs:
         with:
           name: nginx-logto-staging
           path: nginx-logto-staging.tar
+
+  build-mcp-server-docker:
+    name: "Build MCP Server Nginx Docker Image"
+    runs-on: ubuntu-latest
+    env: 
+      IMAGE_NAME: 'nginx-mcp-server'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: buildx
+        with:
+          install: true
+          version: latest
+      
+      - name: Configure Docker image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            registry.digitalocean.com/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=raw,value=staging-latest
+            type=sha,format=long
       
       - name: Build MCP Server image
         uses: docker/build-push-action@v6
