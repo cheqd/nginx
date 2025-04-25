@@ -46,7 +46,7 @@ jobs:
     name: "Deploy MCP Server image"
     runs-on: ubuntu-latest
     env: 
-      IMAGE_NAME: 'nginx-mcp-server'
+      IMAGE_NAME: 'cheqd/nginx-mcp-server'
 
     steps:
       - name: Install DigitalOcean CLI
