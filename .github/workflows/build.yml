@@ -73,7 +73,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            registry.digitalocean.com/${{ env.IMAGE_NAME }}
+            registry.digitalocean.com/cheqd/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
             type=raw,value=staging-latest
