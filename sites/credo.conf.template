@@ -1,0 +1,22 @@
+server {
+    listen      80;
+    server_name <CREDO_ENDPOINT>;
+
+    # reverse proxy
+    location / {
+        proxy_pass            http://remote-mcp-server:<CREDO_PORT>;
+        include               conf.d/proxy.conf;
+    }
+
+    location = /favicon.ico {
+      log_not_found off;
+    }
+
+    location = /robots.txt {
+      log_not_found off;
+    }
+
+    location ~ /\.(?!well-known) {
+        deny all;
+    }
+}
